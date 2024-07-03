@@ -2,22 +2,36 @@
   "name": "react-native-signature-capture",
   "version": "0.4.11",
   "description": "Lets users sign their signatures",
-  "main": "SignatureCapture.js",
+  "main": "lib\\commonjs\\index.js",
+  "module": "lib\\module\\index.js",
+  "types": "lib\\typescript\\src\\index.d.ts",
+  "react-native": "src\\index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepack": "bob build",
+    "build": "npm run prepack && npm pack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RepairShopr/react-native-signature-capture.git"
+    "url": "https://github.com/react-native-oh-library/react-native-signature-capture.git"
   },
   "keywords": [
     "react-component",
     "react-native",
-    "ios",
+    "harmonyos",
     "signature"
   ],
   "peerDependencies": {
+    "react": "*",
     "react-native": ">=0.47"
+  },
+  "harmony": {
+    "alias": "react-native-signature-capture",
+    "codegenConfig": {
+      "specPaths": [
+        "./src"
+      ]
+    }
   },
   "author": "RepairShopr",
   "license": "ISC",
@@ -26,10 +40,45 @@
   },
   "homepage": "https://github.com/RepairShopr/react-native-signature-capture#readme",
   "dependencies": {
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "react-native-signature-capture": "0.4.12"
   },
   "devDependencies": {
-    "react": "16.13.1",
-    "react-native": "0.63.2"
-  }
+    "@types/react": "^18.3.3",
+    "@types/react-native-signature-capture": "^0.4.8",
+    "react": "18.2.0",
+    "react-native": "0.72.5",
+    "react-native-builder-bob": "^0.20.4",
+    "typescript": "4.8.2"
+  },
+  "publishConfig": { "registry": "https://registry.npmjs.org/", "access": "public" },
+  "files": [
+    "src",
+    "lib",
+    "harmony",
+    "README.md",
+    "LICENSE",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+            "project": "tsconfig.build.json",
+            "tsc": "./node_modules/.bin/tsc"
+        }
+      ]
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }
