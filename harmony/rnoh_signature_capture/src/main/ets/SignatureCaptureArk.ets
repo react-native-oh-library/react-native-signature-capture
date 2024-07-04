@@ -269,19 +269,21 @@ export struct SignatureCaptureArkView {
   }
 
   build() {
-    RNViewBase({ ctx: this.ctx, tag: this.tag }) {
-      Canvas(this.context2D)
-        .onReady(() => {
-          this.canvasReady();
-      }).onTouch((event: TouchEvent) => {
-        // touch事件event获取坐标，绘制线条
-        this.onDraw(event);
-      })
-      .width(this.descriptorWrapper.width)
-      .height(this.descriptorWrapper.height)
-      .backgroundColor(this.descriptorWrapper.backgroundColor)
-      this.buildTitleLabel();
-      this.buildButton();
+    Column() {
+      RNViewBase({ ctx: this.ctx, tag: this.tag }) {
+        Canvas(this.context2D)
+          .onReady(() => {
+            this.canvasReady();
+          }).onTouch((event: TouchEvent) => {
+          // touch事件event获取坐标，绘制线条
+          this.onDraw(event);
+        })
+          .width(this.descriptorWrapper.width)
+          .height(this.descriptorWrapper.height)
+          .backgroundColor(this.descriptorWrapper.backgroundColor)
+        this.buildTitleLabel();
+        this.buildButton();
+      }
     }
   }
 }
