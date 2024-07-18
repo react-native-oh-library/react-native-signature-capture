@@ -31,7 +31,7 @@ export class SignatureCapturePackage extends RNPackage {
 
   createDescriptorWrapperFactoryByDescriptorType(ctx: DescriptorWrapperFactoryByDescriptorTypeCtx): DescriptorWrapperFactoryByDescriptorType {
     return {
-      [RNC.SignatureCaptureArkView.NAME]: (ctx) => new RNC.SignatureCaptureArkView.DescriptorWrapper(ctx.descriptor)
+      [RNC.RSSignatureArkView.NAME]: (ctx) => new RNC.RSSignatureArkView.DescriptorWrapper(ctx.descriptor)
     }
   }
 }

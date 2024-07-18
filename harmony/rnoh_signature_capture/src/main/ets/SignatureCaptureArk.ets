@@ -39,16 +39,16 @@ const prefix = 'data:image/png;base64,';
 
 @Component
 export struct SignatureCaptureArkView {
-  public static readonly NAME = RNC.SignatureCaptureArkView.NAME
+  public static readonly NAME = RNC.RSSignatureArkView.NAME
   public ctx!: RNComponentContext
   public tag: number = 0;
   // canvas
   private setting: RenderingContextSettings = new RenderingContextSettings(true);
   private context2D: CanvasRenderingContext2D = new CanvasRenderingContext2D(this.setting);
   sign = new SmoothSignature(this.context2D, {});
-  @State private descriptorWrapper: RNC.SignatureCaptureArkView.DescriptorWrapper = {
-  } as RNC.SignatureCaptureArkView.DescriptorWrapper
-  private eventEmitter: RNC.SignatureCaptureArkView.EventEmitter | undefined = undefined
+  @State private descriptorWrapper: RNC.RSSignatureArkView.DescriptorWrapper = {
+  } as RNC.RSSignatureArkView.DescriptorWrapper
+  private eventEmitter: RNC.RSSignatureArkView.EventEmitter | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
   private logger!: RNOHLogger;
   private windowClass!: window.Window;
@@ -60,18 +60,18 @@ export struct SignatureCaptureArkView {
    // 初始化logger
    this.logger = this.ctx.logger.clone('SignatureCapture');
 
-   this.eventEmitter = new RNC.SignatureCaptureArkView.EventEmitter(this.ctx.rnInstance, this.tag)
+   this.eventEmitter = new RNC.RSSignatureArkView.EventEmitter(this.ctx.rnInstance, this.tag)
 
-   this.onDescriptorWrapperChange(this.ctx.descriptorRegistry.findDescriptorWrapperByTag<RNC.SignatureCaptureArkView.DescriptorWrapper>(this.tag)!)
+   this.onDescriptorWrapperChange(this.ctx.descriptorRegistry.findDescriptorWrapperByTag<RNC.RSSignatureArkView.DescriptorWrapper>(this.tag)!)
 
    this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (_descriptor, newDescriptorWrapper) => {
         this.logger.info('signature capture descriptor change!');
-        this.onDescriptorWrapperChange(newDescriptorWrapper! as RNC.SignatureCaptureArkView.DescriptorWrapper)
+        this.onDescriptorWrapperChange(newDescriptorWrapper! as RNC.RSSignatureArkView.DescriptorWrapper)
       }
    ));
 
-   const cmdReceiver = new RNC.SignatureCaptureArkView.CommandReceiver(this.ctx.componentCommandReceiver, this.tag);
+   const cmdReceiver = new RNC.RSSignatureArkView.CommandReceiver(this.ctx.componentCommandReceiver, this.tag);
 
    this.cleanUpCallbacks.push(cmdReceiver.subscribe("saveImage", (argv) => {
      this.logger.info('==== command saveImage ====' + JSON.stringify(argv));
@@ -127,7 +127,7 @@ export struct SignatureCaptureArkView {
     this.sign.color = this.descriptorWrapper.props.strokeColor.toRGBAString();
   }
 
-  private onDescriptorWrapperChange(descriptorWrapper: RNC.SignatureCaptureArkView.DescriptorWrapper) {
+  private onDescriptorWrapperChange(descriptorWrapper: RNC.RSSignatureArkView.DescriptorWrapper) {
     this.logger.info('descriptor change!');
     this.descriptorWrapper = descriptorWrapper;
     this.setProps();
@@ -269,21 +269,19 @@ export struct SignatureCaptureArkView {
   }
 
   build() {
-    Column() {
-      RNViewBase({ ctx: this.ctx, tag: this.tag }) {
-        Canvas(this.context2D)
-          .onReady(() => {
-            this.canvasReady();
-          }).onTouch((event: TouchEvent) => {
-          // touch事件event获取坐标，绘制线条
-          this.onDraw(event);
-        })
-          .width(this.descriptorWrapper.width)
-          .height(this.descriptorWrapper.height)
-          .backgroundColor(this.descriptorWrapper.backgroundColor)
-        this.buildTitleLabel();
-        this.buildButton();
-      }
+    RNViewBase({ ctx: this.ctx, tag: this.tag }) {
+      Canvas(this.context2D)
+        .onReady(() => {
+          this.canvasReady();
+        }).onTouch((event: TouchEvent) => {
+        // touch事件event获取坐标，绘制线条
+        this.onDraw(event);
+      })
+        .width(this.descriptorWrapper.width)
+        .height(this.descriptorWrapper.height)
+        .backgroundColor(this.descriptorWrapper.backgroundColor)
+      this.buildTitleLabel();
+      this.buildButton();
     }
   }
 }

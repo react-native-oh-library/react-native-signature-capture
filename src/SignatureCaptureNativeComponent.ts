@@ -54,5 +54,5 @@ export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
  * codegen restriction: the result of codegenNativeComponent must be a default export
  */
 export default codegenNativeComponent<SignatureCaptureArkViewNativeProps>(
-  'SignatureCaptureArkView'
+  'RSSignatureArkView'
 ) as HostComponent<SignatureCaptureArkViewNativeProps>
