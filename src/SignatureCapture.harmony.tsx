@@ -1,23 +1,14 @@
-import React, { useRef } from "react";
-import {
-    NativeSyntheticEvent,
-    ViewStyle,
-    StyleProp,
+import React from "react";
+import type { ProcessedColorValue, StyleProp, ViewProps } from "react-native";
+var ReactNative = require('react-native');
+var {
     UIManager,
-    findNodeHandle,
-    ProcessedColorValue,
-    processColor,
-  } from "react-native";
-  import SignatureCaptureNativeComponent from './SignatureCaptureNativeComponent';
-  
-  export type SignatureComponentRef = {
-     saveImage: () => void
-     resetImage: () => void
-   };
+    DeviceEventEmitter
+} = ReactNative;
 
-const SignatureCaptureHarmonyComponent = React.forwardRef<
-  SignatureComponentRef,
-  {
+import RSSignatureView from './SignatureCaptureNativeComponent'; 
+
+type SignProps = {
     backgroundColor?: ProcessedColorValue;
     onSaveEvent?: (ev: {pathName: string, encoded: string}) => void
     onDragEvent?: (ev: {dragged: boolean}) => void
@@ -29,77 +20,95 @@ const SignatureCaptureHarmonyComponent = React.forwardRef<
     showBorder?:boolean
     viewMode?: 'portrait' | 'landscape'
     maxSize?: number
-    styles?: StyleProp<ViewStyle>
-  }
->(( props, ref) => {
-  const nativeRef = useRef<any>(null);
+    style?: StyleProp<ViewProps>
+}
 
-  React.useImperativeHandle(
-    ref,
-    () => ({
-      saveImage() {
-        if (nativeRef?.current) {
-          UIManager.dispatchViewManagerCommand(
-            findNodeHandle(nativeRef.current),
-            "saveImage",
-            []
-          );
-        }
-      },
-      resetImage() {
-        if (nativeRef?.current) {
-          UIManager.dispatchViewManagerCommand(
-            findNodeHandle(nativeRef.current),
-            "resetImage",
-            []
-          );
-        }
-      },
-    }),
-    []
-  );
-
-  const borderStyle: StyleProp<ViewStyle> = {
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: '#ccc'
-  }
-  
-  const onChange = (ev: NativeSyntheticEvent<{pathName: string, encoded: string} | {dragged: boolean}>) => {
-    const nativeEvent = ev.nativeEvent; 
+class SignatureCapture extends React.Component<SignProps> {
     
-    if ('pathName' in nativeEvent) {
-      if (!props.onSaveEvent) { return; }
-      nativeEvent.pathName && props.onSaveEvent({
-        pathName: nativeEvent.pathName,
-        encoded: nativeEvent.encoded
-      })
+    private subscriptions: Array<{remove: () => void}> = [];
+    
+    constructor(props: SignProps) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
     }
-    if ('dragged' in nativeEvent) {
-      if (!props.onDragEvent) { return; }
-      nativeEvent.dragged && props.onDragEvent({
-        dragged: nativeEvent.dragged
-      })
+    
+    borderStyle = { borderWidth: 1, borderStyle: 'dashed', borderColor: '#ccc' }
+
+    onChange(event: any) {
+
+        if(event.nativeEvent.pathName){
+
+            if (!this.props.onSaveEvent) {
+                return;
+            }
+            this.props.onSaveEvent({
+                pathName: event.nativeEvent.pathName,
+                encoded: event.nativeEvent.encoded,
+            });
+        }
+
+        if(event.nativeEvent.dragged){
+            if (!this.props.onDragEvent) {
+                return;
+            }
+            this.props.onDragEvent({
+                dragged: event.nativeEvent.dragged
+            });
+        }
     }
-  }
-  
-  const processedStrokeColor = processColor(props.strokeColor ?? 'black');
-  const processedBackgroundColor = processColor(props.backgroundColor);
 
-  
-  const colorHandleProps = {
-    ...props, strokeColor: processedStrokeColor, backgroundColor: processedBackgroundColor
-  }
-  
-  
-  return (
-    <SignatureCaptureNativeComponent
-      ref={nativeRef}
-      style={[props.styles, props.showBorder ? borderStyle : {}]}
-      onChange={onChange}
-      {...colorHandleProps}
-    />
-  );
-})
+    componentDidMount() {
+        if (this.props.onSaveEvent) {
+            let sub = DeviceEventEmitter.addListener(
+                'onSaveEvent',
+                this.props.onSaveEvent
+            );
+            this.subscriptions.push(sub);
+        }
 
-export default SignatureCaptureHarmonyComponent;
+        if (this.props.onDragEvent) {
+            let sub = DeviceEventEmitter.addListener(
+                'onDragEvent',
+                this.props.onDragEvent
+            );
+            this.subscriptions.push(sub);
+        }
+    }
+
+    componentWillUnmount() {
+        this.subscriptions.forEach((sub: any) => sub.remove());
+        this.subscriptions = [];
+    }
+
+    render() {
+        let borderStyle = this.props.showBorder ? this.borderStyle : {};
+        let finalStyle = Array.isArray(this.props.style) ? [...this.props.style, borderStyle] : [this.props.style, borderStyle];
+
+        const processColorProps = {
+            ...this.props, backgroundColor: ReactNative.processColor(this.props.backgroundColor),
+            strokeColor: ReactNative.processColor(this.props.strokeColor), style: finalStyle
+        }
+        return (
+            <RSSignatureView {...processColorProps} onChange={this.onChange} />
+        );
+    }
+
+    saveImage() {
+        UIManager.dispatchViewManagerCommand(
+            ReactNative.findNodeHandle(this),
+            'saveImage',
+            [],
+        );
+    }
+
+    resetImage() {
+        UIManager.dispatchViewManagerCommand(
+            ReactNative.findNodeHandle(this),
+            'resetImage',
+            [],
+        );
+    }
+}
+
+
+export default SignatureCapture;
