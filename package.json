@@ -1,6 +1,6 @@
 {
   "name": "@react-native-oh-tpl/react-native-signature-capture",
-  "version": "0.4.11-0.0.2",
+  "version": "0.4.11-0.0.3",
   "description": "Lets users sign their signatures",
   "main": "lib\\commonjs\\index.js",
   "module": "lib\\module\\index.js",
