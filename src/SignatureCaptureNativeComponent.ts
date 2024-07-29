@@ -18,7 +18,7 @@ export interface OutgoingAndIncomingData {
     showBorder?: WithDefault<boolean, true>,
     showNativeButtons?: WithDefault<boolean, true>,
     showTitleLabel?: WithDefault<boolean, true>,
-    maxSize?: WithDefault<Int32, 500>,
+    maxSize?: Int32,
     minStrokeWidth?: WithDefault<Float, 3>,
     maxStrokeWidth?: WithDefault<Float, 6>,
     strokeColor?: ProcessedColorValue | null,

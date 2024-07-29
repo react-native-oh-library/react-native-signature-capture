@@ -177,19 +177,21 @@ export struct SignatureCaptureArkView {
   private getReSizePm() {
     const pm = this.getCanvasPixMap();
     const maxSize = this.descriptorWrapper.props.maxSize;
-    let width = this.context2D.width;
-    let height = this.context2D.height;
-    const ratio = width / height;
-    if (ratio > 1) {
-      width = maxSize;
-      height = width / ratio;
-    } else {
-      height = maxSize;
-      width = height * ratio;
+    if (maxSize) {
+      let width = this.context2D.width;
+      let height = this.context2D.height;
+      const ratio = width / height;
+      if (ratio > 1) {
+        width = maxSize;
+        height = width / ratio;
+      } else {
+        height = maxSize;
+        width = height * ratio;
+      }
+      let xScale = width / this.context2D.width / 3.25;
+      let yScale = height / this.context2D.height / 3.25;
+      pm.scaleSync(xScale, yScale);
     }
-    let xScale = width / this.context2D.width;
-    let yScale = height / this.context2D.height;
-    pm.scaleSync(xScale, yScale);
     return pm;
   }
 
