@@ -62,12 +62,12 @@ export struct SignatureCaptureArkView {
 
    this.eventEmitter = new RNC.RSSignatureArkView.EventEmitter(this.ctx.rnInstance, this.tag)
 
-   this.onDescriptorWrapperChange(this.ctx.descriptorRegistry.findDescriptorWrapperByTag<RNC.RSSignatureArkView.DescriptorWrapper>(this.tag)!)
+   this.onDescriptorWrapperChange(this.ctx.descriptorRegistry.getDescriptor<RNC.RSSignatureArkView.Descriptor>(this.tag)!)
 
    this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
-      (_descriptor, newDescriptorWrapper) => {
+      descriptor => {
         this.logger.info('signature capture descriptor change!');
-        this.onDescriptorWrapperChange(newDescriptorWrapper! as RNC.RSSignatureArkView.DescriptorWrapper)
+        this.onDescriptorWrapperChange(descriptor! as RNC.RSSignatureArkView.Descriptor)
       }
    ));
 
@@ -127,9 +127,9 @@ export struct SignatureCaptureArkView {
     this.sign.color = this.descriptorWrapper.props.strokeColor.toRGBAString();
   }
 
-  private onDescriptorWrapperChange(descriptorWrapper: RNC.RSSignatureArkView.DescriptorWrapper) {
+  private onDescriptorWrapperChange(descriptor: RNC.RSSignatureArkView.Descriptor) {
     this.logger.info('descriptor change!');
-    this.descriptorWrapper = descriptorWrapper;
+    this.descriptorWrapper = new RNC.RSSignatureArkView.DescriptorWrapper(descriptor);
     this.setProps();
   }
 
