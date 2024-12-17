@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "react-native-signature-capture",
+        "License": "MIT License",
+        "License File": "https://github.com/RepairShopr/react-native-signature-capture/blob/master/LICENSE",
+        "Version Number": "0.4.11",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/RepairShopr/react-native-signature-capture",
+        "Description": "Lets users sign their signatures"
+    }
+]
