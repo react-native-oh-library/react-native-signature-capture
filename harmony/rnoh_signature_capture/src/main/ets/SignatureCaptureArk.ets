@@ -89,7 +89,6 @@ export struct SignatureCaptureArkView {
     this.setMaxWidth();
     this.setStrokeColor();
     this.setBackgroundColor();
-    this.setViewMode(this.descriptorWrapper.props.viewMode);
   }
 
   private async setWindowClass(): Promise<void> {
@@ -129,8 +128,12 @@ export struct SignatureCaptureArkView {
 
   private onDescriptorWrapperChange(descriptor: RNC.RSSignatureArkView.Descriptor) {
     this.logger.info('descriptor change!');
+    const prevViewMode = this.descriptorWrapper?.props?.viewMode;
     this.descriptorWrapper = new RNC.RSSignatureArkView.DescriptorWrapper(descriptor);
     this.setProps();
+    if (prevViewMode !== this.descriptorWrapper.props.viewMode) {
+      this.setViewMode(this.descriptorWrapper.props.viewMode);
+    }
   }
 
   aboutToDisappear() {
