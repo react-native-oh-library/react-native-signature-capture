@@ -1,6 +1,6 @@
 # @react-native-oh-tpl/react-native-signature-capture
 
-This project is based on [react-native-signature-capture (react-native-signature-capture) v0.4.11](https://github.com/RepairShopr/react-native-signature-capture/releases/tag/v0.4.11)
+This project is based on [react-native-signature-capture v0.4.11](https://github.com/RepairShopr/react-native-signature-capture/releases/tag/v0.4.11)
 
 ## Documentation
 
