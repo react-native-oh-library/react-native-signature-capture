@@ -128,9 +128,11 @@ export struct SignatureCaptureArkView {
 
   private onDescriptorWrapperChange(descriptor: RNC.RSSignatureArkView.Descriptor) {
     this.logger.info('descriptor change!');
+    // 保存上一次的viewMode
     const prevViewMode = this.descriptorWrapper?.props?.viewMode;
     this.descriptorWrapper = new RNC.RSSignatureArkView.DescriptorWrapper(descriptor);
     this.setProps();
+    // 如果上一次的横竖屏情况与新的横竖屏情况没有发生变化，就不调用设置横竖屏的回调
     if (prevViewMode !== this.descriptorWrapper.props.viewMode) {
       this.setViewMode(this.descriptorWrapper.props.viewMode);
     }
